@@ -4,402 +4,1239 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Protokol Süreçlerinin Dijital Dönüşümü | İnfografik</title>
+
+    <!-- External Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- React & ReactDOM from CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel Standalone for in-browser JSX/TSX transpilation -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <!-- Custom Styles -->
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
-        }
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-        .flowchart-step {
-            position: relative;
-            padding: 1rem;
-            border: 2px solid #94D2BD;
-            border-radius: 0.5rem;
+        .info-popup {
+            position: absolute;
             background-color: white;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
-        .flowchart-arrow {
-            position: absolute;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            padding: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            z-index: 60;
+            width: 280px;
+            font-size: 0.875rem;
+            color: #374151;
+            bottom: 100%; 
             left: 50%;
-            bottom: -20px;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 20px;
-            background-color: #0A9396;
+            transform: translateX(-50%) translateY(-10px);
+            margin-bottom: 5px;
         }
-        .flowchart-arrow::after {
-            content: '';
+        .info-popup::after {
+            content: "";
             position: absolute;
-            left: -4px;
-            bottom: 0;
-            border-left: 5px solid transparent;
-            border-right: 5px solid transparent;
-            border-top: 5px solid #0A9396;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: white transparent transparent transparent;
         }
-        .loading-spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #005F73;
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
+        .info-icon-container {
+            position: relative;
             display: inline-block;
-            vertical-align: middle;
-            margin-right: 8px;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .info-icon {
+            cursor: pointer;
+            color: #3b82f6;
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+        .kvkk-text-area::-webkit-scrollbar {
+            width: 8px;
+        }
+        .kvkk-text-area::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .kvkk-text-area::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .kvkk-text-area::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        .file-input-label {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #4f46e5;
+            background-color: #e0e7ff;
+            border: 1px solid #c7d2fe;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out;
+        }
+        .file-input-label:hover {
+            background-color: #c7d2fe;
+        }
+        .error-message {
+            color: #ef4444;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        .input-error {
+            border-color: #ef4444 !important;
+            --tw-ring-color: #ef4444 !important;
         }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    
+    <!-- React Application Code (Transpiled by Babel) -->
+    <script type="text/babel">
+    
+const { useState, useEffect, useRef } = React;
 
-    <div class="container mx-auto p-4 md:p-8">
+// --- START OF components/charts/BarChart.tsx ---
+const BarChart = () => {
+  const chartRef = useRef(null);
+  const chartInstance = useRef(null);
 
-        <header class="text-center mb-12 md:mb-16">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-[#005F73] mb-4">Protokol Süreçlerinin Dijital Dönüşümü</h1>
-            <p class="text-lg md:text-xl text-[#0A9396] max-w-3xl mx-auto">Kurum dışı işbirliklerini haftalardan günlere indiren etkin yönetim çözümü</p>
-        </header>
+  useEffect(() => {
+    if (chartRef.current) {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
 
-        <main class="space-y-12 md:space-y-16">
-
-            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-[#005F73] text-center mb-8">Mevcut Durum: Verimsiz ve Yavaş Bir Süreç</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                    <div>
-                        <h3 class="text-xl font-semibold text-[#CA6702] mb-4">Süreç Neden Bu Kadar Uzun?</h3>
-                        <p class="mb-6 text-gray-600">Mevcut iş akışımız, iletişim karmaşası, uzun hukuki yazışmalar, fiziksel belge yönetimi ve çok sayıda onay beklemesi gibi manuel adımlarla doludur. Bu durum, verimsizliğe ve yüksek hata riskine yol açmaktadır.</p>
-                        <div class="flex flex-wrap gap-4">
-                            <div class="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full">11 Ayrı Süreç Adımı</div>
-                            <div class="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full">Yüksek Hata Riski</div>
-                            <div class="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full">Çoklu İnsan Müdahalesi</div>
-                        </div>
-                    </div>
-                    <div class="chart-container h-64 md:h-80">
-                        <canvas id="sureKarsilastirmaChart"></canvas>
-                    </div>
-                </div>
-            </section>
-            
-            <section>
-                <h2 class="text-3xl font-bold text-[#005F73] text-center mb-8">Sektör Ne Yapıyor? Benchmark Analizi</h2>
-                <div class="overflow-x-auto bg-white rounded-lg shadow-lg p-6">
-                    <p class="text-gray-600 mb-6 text-center max-w-3xl mx-auto">Yaptığımız araştırma, önde gelen üniversitelerin genel işbirlikleri için bizimki gibi uzun ve yazılı protokol süreçlerine girmediğini gösteriyor. Mevcut yaklaşımımız, sektör standartlarının dışında kalmaktadır.</p>
-                    <table class="w-full min-w-max text-left">
-                        <thead>
-                            <tr class="border-b-2 border-[#0A9396]">
-                                <th class="p-4 text-lg font-semibold text-[#005F73]">Üniversite</th>
-                                <th class="p-4 text-lg font-semibold text-[#005F73]">Yaklaşım</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="border-b border-gray-200">
-                                <td class="p-4 font-medium">Bahçeşehir Üniversitesi</td>
-                                <td class="p-4 text-gray-700">Sadece sistematik (Co-Op vb.) işbirliklerinde basılı protokol kullanılıyor.</td>
-                            </tr>
-                            <tr class="border-b border-gray-200 bg-gray-50">
-                                <td class="p-4 font-medium">Yeditepe Üniversitesi</td>
-                                <td class="p-4 text-gray-700">Protokol imzalanmıyor, staj sözleşmeleri işbirliği sayılıyor.</td>
-                            </tr>
-                            <tr class="border-b border-gray-200">
-                                <td class="p-4 font-medium">Bilgi Üniversitesi</td>
-                                <td class="p-4 text-gray-700">Yalnızca yasal zorunluluk (Markalı Ders vb.) durumlarında protokol imzalanıyor.</td>
-                            </tr>
-                            <tr class="bg-gray-50">
-                                <td class="p-4 font-medium">Özyeğin Üniversitesi</td>
-                                <td class="p-4 text-gray-700">Kariyer Merkezi, sektörel işbirlikleri için protokol sürecine girmiyor.</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-
-            <section class="bg-[#005F73] text-white rounded-lg shadow-lg p-6 md:p-8">
-                <h2 class="text-3xl font-bold text-center mb-8 text-white">Çözüm: Online İşbirliği Formu</h2>
-                <p class="text-center text-[#E9D8A6] max-w-3xl mx-auto mb-10">Mevcut karmaşık süreci, güvenli, akıllı ve dinamik bir dijital form ile değiştirerek verimliliği en üst seviyeye taşıyoruz.</p>
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-[#0A9396] p-6 rounded-lg text-center">
-                        <div class="text-4xl mb-3">🔒</div>
-                        <h3 class="text-xl font-bold mb-2">Güvenli Doğrulama</h3>
-                        <p class="text-sm text-[#94D2BD]">SMS ve E-posta onayı ile dijital imza niteliğinde güvenlik sağlanır.</p>
-                    </div>
-                    <div class="bg-[#0A9396] p-6 rounded-lg text-center">
-                        <div class="text-4xl mb-3">🧠</div>
-                        <h3 class="text-xl font-bold mb-2">Kurum Hafızası</h3>
-                        <p class="text-sm text-[#94D2BD]">Aranabilir ve sürdürülebilir firma kartları ile veri kaybı önlenir.</p>
-                    </div>
-                    <div class="bg-[#0A9396] p-6 rounded-lg text-center">
-                        <div class="text-4xl mb-3">📊</div>
-                        <h3 class="text-xl font-bold mb-2">Kolay Raporlama</h3>
-                        <p class="text-sm text-[#94D2BD]">YÖK ve iç raporlamalar için anında veri çekme ve analiz imkânı sunar.</p>
-                    </div>
-                </div>
-                <div class="text-center mt-8">
-                    <a href="https://g.co/gemini/share/e9004e94939d" target="_blank" class="inline-block bg-[#EE9B00] text-[#005F73] font-bold py-3 px-6 rounded-full text-lg hover:bg-[#CA6702] transition duration-300">Örnek Dijital Formu İncele</a>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="text-3xl font-bold text-[#005F73] text-center mb-8">Beklenen Faydalar: Rakamlarla Dönüşüm</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <h3 class="text-lg font-semibold text-[#CA6702] mb-4">Süre Azalması</h3>
-                        <div class="chart-container h-48">
-                            <canvas id="sureAzalmasiChart"></canvas>
-                        </div>
-                        <p class="mt-4 text-gray-600">Süreçler haftalardan günlere inerek işbirliği hızı artar.</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <h3 class="text-lg font-semibold text-[#CA6702] mb-4">İş Gücü Tasarrufu</h3>
-                        <div class="chart-container h-48">
-                            <canvas id="isgucuTasarrufuChart"></canvas>
-                        </div>
-                        <p class="mt-4 text-gray-600">Manuel adımlar ortadan kalkar, personel zamanı daha verimli kullanılır.</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <h3 class="text-lg font-semibold text-[#CA6702] mb-4">Hata Oranı Azalması</h3>
-                        <div class="chart-container h-48">
-                            <canvas id="hataOraniChart"></canvas>
-                        </div>
-                        <p class="mt-4 text-gray-600">Otomasyon sayesinde manuel veri girişi hataları minimize edilir.</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-lg p-6 text-center">
-                        <h3 class="text-lg font-semibold text-[#CA6702] mb-4">Maliyet Tasarrufu</h3>
-                        <div class="chart-container h-48">
-                            <canvas id="maliyetTasarrufuChart"></canvas>
-                        </div>
-                        <p class="mt-4 text-gray-600">Kağıt, kargo ve arşivleme masrafları tamamen ortadan kalkar.</p>
-                    </div>
-                </div>
-            </section>
-            
-            <section>
-                <h2 class="text-3xl font-bold text-[#005F73] text-center mb-8">Stratejik Avantajlar</h2>
-                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <div class="text-3xl text-[#EE9B00] mb-3">🏢</div>
-                        <h3 class="text-xl font-bold text-[#005F73] mb-2">Güçlü Kurumsal İmaj</h3>
-                        <p class="text-gray-600">Daha fazla firmayı referans göstererek üniversitemizin sektördeki konumunu güçlendiririz.</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <div class="text-3xl text-[#EE9B00] mb-3">🎓</div>
-                        <h3 class="text-xl font-bold text-[#005F73] mb-2">Zengin Öğrenci Desteği</h3>
-                        <p class="text-gray-600">Öğrencilerimiz için kariyer planlamalarında kullanabilecekleri zengin bir firma veri tabanı oluştururuz.</p>
-                    </div>
-                    <div class="bg-white rounded-lg shadow-lg p-6">
-                        <div class="text-3xl text-[#EE9B00] mb-3">🌿</div>
-                        <h3 class="text-xl font-bold text-[#005F73] mb-2">Çevre Dostu Yaklaşım</h3>
-                        <p class="text-gray-600">Kağıt kullanımını sıfırlayarak sürdürülebilirlik hedeflerimize önemli bir katkı sağlarız.</p>
-                    </div>
-                </div>
-            </section>
-
-            <section>
-                <h2 class="text-3xl font-bold text-[#005F73] text-center mb-8">Aksiyon Planı: Dijital Geleceğe Adımlar</h2>
-                <div class="max-w-3xl mx-auto">
-                    <div class="relative pl-8 space-y-8 border-l-2 border-[#0A9396]">
-                        <div class="relative">
-                            <div class="absolute w-6 h-6 bg-[#EE9B00] rounded-full -left-[13px] border-4 border-white"></div>
-                            <div class="ml-8 bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-bold text-lg text-[#005F73]">Rektörlük Onayı & Genel Sekreterlik Talimatı</h3>
-                                <p class="text-sm text-gray-600">Projenin hayata geçirilmesi için üst yönetim onayı ve resmi talimatların alınması.</p>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute w-6 h-6 bg-[#EE9B00] rounded-full -left-[13px] border-4 border-white"></div>
-                            <div class="ml-8 bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-bold text-lg text-[#005F73]">BT Biriminin Hazırlığı & Sistemi Devreye Alma</h3>
-                                <p class="text-sm text-gray-600">Gelecekteki entegrasyon planlaması ve dijital formun canlıya alınması.</p>
-                            </div>
-                        </div>
-                        <div class="relative">
-                            <div class="absolute w-6 h-6 bg-[#EE9B00] rounded-full -left-[13px] border-4 border-white"></div>
-                            <div class="ml-8 bg-white p-4 rounded-lg shadow">
-                                <h3 class="font-bold text-lg text-[#005F73]">Duyuru ve Yaygınlaştırma</h3>
-                                <p class="text-sm text-gray-600">Yeni sürecin tüm akademik ve idari birimlere tanıtılması ve kullanımının teşvik edilmesi.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-        </main>
-
-        <footer class="text-center mt-12 md:mt-16 pt-8 border-t border-gray-300">
-            <p class="text-gray-500">&copy; 2025 İstanbul Arel Üniversitesi | ArelKAM</p>
-        </footer>
-
-    </div>
-
-    <script>
-        const tooltipTitleCallback = (tooltipItems) => {
-            const item = tooltipItems[0];
-            let label = item.chart.data.labels[item.dataIndex];
-            if (Array.isArray(label)) {
-                return label.join(' ');
-            }
-            return label;
-        };
-
-        const defaultChartOptions = {
+      const ctx = chartRef.current.getContext('2d');
+      if (ctx) {
+        chartInstance.current = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Mevcut Süreç', 'Dijital Süreç'],
+            datasets: [{
+              label: 'Gün Sayısı',
+              data: [30, 2],
+              backgroundColor: ['#AE2012', '#0A9396'],
+              borderColor: ['#9B2226', '#005F73'],
+              borderWidth: 1
+            }]
+          },
+          options: {
             responsive: true,
             maintainAspectRatio: false,
+            indexAxis: 'y',
+            scales: {
+              x: {
+                beginAtZero: true,
+                title: { display: true, text: 'Ortalama Süre (Gün)', color: '#005F73' },
+                ticks: { color: '#0A9396' }
+              },
+              y: {
+                ticks: { color: '#0A9396', font: { size: 14 } }
+              }
+            },
             plugins: {
-                legend: {
-                    position: 'bottom',
-                    labels: {
-                        color: '#005F73',
-                        font: {
-                            size: 14,
-                            family: 'Inter'
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: '#005F73',
+                titleFont: { size: 14, family: 'Inter' },
+                bodyFont: { size: 12, family: 'Inter' }
+              }
+            }
+          }
+        });
+      }
+    }
+    
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, []);
+
+  return <canvas ref={chartRef}></canvas>;
+};
+// --- END OF components/charts/BarChart.tsx ---
+
+// --- START OF components/charts/DoughnutChart.tsx ---
+const DoughnutChart = ({ data, labels, title }) => {
+    const chartRef = useRef(null);
+    const chartInstance = useRef(null);
+
+    useEffect(() => {
+        if (chartRef.current) {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+
+            const ctx = chartRef.current.getContext('2d');
+            if (ctx) {
+                chartInstance.current = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: title,
+                            data: data,
+                            backgroundColor: ['#0A9396', '#E9D8A6'],
+                            borderColor: ['#FFFFFF'],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '70%',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed !== null) {
+                                            label += context.parsed + '%';
+                                        }
+                                        return label;
+                                    }
+                                },
+                                backgroundColor: '#005F73',
+                            }
                         }
                     }
-                },
-                tooltip: {
-                    callbacks: {
-                        title: tooltipTitleCallback
-                    },
-                    backgroundColor: '#005F73',
-                    titleFont: { size: 14, family: 'Inter' },
-                    bodyFont: { size: 12, family: 'Inter' }
-                }
+                });
             }
-        };
-
-        const defaultDoughnutOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            cutout: '70%',
-            plugins: {
-                legend: {
-                   display: false
-                },
-                tooltip: {
-                    callbacks: {
-                        title: tooltipTitleCallback,
-                        label: function(context) {
-                            let label = context.dataset.label || '';
-                            if (label) {
-                                label += ': ';
-                            }
-                            if (context.parsed !== null) {
-                                label += context.parsed + '%';
-                            }
-                            return label;
-                        }
-                    },
-                    backgroundColor: '#005F73',
-                }
-            }
-        };
-
-        new Chart(document.getElementById('sureKarsilastirmaChart'), {
-            type: 'bar',
-            data: {
-                labels: ['Mevcut Süreç', 'Dijital Süreç'],
-                datasets: [{
-                    label: 'Gün Sayısı',
-                    data: [30, 2],
-                    backgroundColor: ['#AE2012', '#0A9396'],
-                    borderColor: ['#9B2226', '#005F73'],
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                ...defaultChartOptions,
-                indexAxis: 'y',
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: { display: true, text: 'Ortalama Süre (Gün)', color: '#005F73' },
-                        ticks: { color: '#0A9396' }
-                    },
-                    y: {
-                        ticks: { color: '#0A9396', font: { size: 14 } }
-                    }
-                },
-                plugins: { ...defaultChartOptions.plugins, legend: { display: false } }
-            }
-        });
-
-        new Chart(document.getElementById('sureAzalmasiChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Azalma', 'Kalan'],
-                datasets: [{
-                    label: 'Süre Azalması',
-                    data: [95, 5],
-                    backgroundColor: ['#0A9396', '#E9D8A6'],
-                    borderColor: ['#FFFFFF'],
-                    borderWidth: 2
-                }]
-            },
-            options: defaultDoughnutOptions
-        });
+        }
         
-        new Chart(document.getElementById('isgucuTasarrufuChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Tasarruf', 'Kalan'],
-                datasets: [{
-                    label: 'İş Gücü Tasarrufu',
-                    data: [80, 20],
-                    backgroundColor: ['#0A9396', '#E9D8A6'],
-                    borderColor: ['#FFFFFF'],
-                    borderWidth: 2
-                }]
-            },
-            options: defaultDoughnutOptions
-        });
+        return () => {
+            if (chartInstance.current) {
+                chartInstance.current.destroy();
+            }
+        };
+    }, [data, labels, title]);
 
-        new Chart(document.getElementById('hataOraniChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Azalma', 'Kalan'],
-                datasets: [{
-                    label: 'Hata Oranında Azalma',
-                    data: [95, 5],
-                    backgroundColor: ['#0A9396', '#E9D8A6'],
-                    borderColor: ['#FFFFFF'],
-                    borderWidth: 2
-                }]
-            },
-            options: defaultDoughnutOptions
-        });
+    return <canvas ref={chartRef}></canvas>;
+};
+// --- END OF components/charts/DoughnutChart.tsx ---
 
-        new Chart(document.getElementById('maliyetTasarrufuChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Tasarruf', 'Kalan'],
-                datasets: [{
-                    label: 'Kağıt & Kargo Tasarrufu',
-                    data: [100, 0],
-                    backgroundColor: ['#0A9396', '#E9D8A6'],
-                    borderColor: ['#FFFFFF'],
-                    borderWidth: 2
-                }]
-            },
-            options: defaultDoughnutOptions
+// --- START OF components/Header.tsx ---
+const Header = () => {
+  return (
+    <header className="text-center mb-12 md:mb-16">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-[#005F73] mb-4">Protokol Süreçlerinin Dijital Dönüşümü</h1>
+      <p className="text-lg md:text-xl text-[#0A9396] max-w-3xl mx-auto">Kurum dışı işbirliklerini haftalardan günlere indiren etkin yönetim çözümü</p>
+    </header>
+  );
+};
+// --- END OF components/Header.tsx ---
+
+// --- START OF components/CurrentSituationSection.tsx ---
+const processSteps = [
+  "1. Mail üzerinden karşı tarafla sözleşme paylaşımı",
+  "2. Karşı tarafın değişiklik taleplerinin hukuk birimine aktarılması",
+  "3. Hukuk biriminin dönüşünün karşı tarafa iletilmesi",
+  "4. Yazışmalar sonrası mutabakat sağlandığında, hardcopy ıslak imzalı ve kaşeli iki nüsha kargo talebi",
+  "5. Gelen sözleşmelerin hukuk birimine bırakılması",
+  "6. Hukuk müşavirinin paraflama sürecinin beklenmesi ve ara ara sorgulanması",
+  "7. Paraflanan sözleşmenin hukuk biriminden teslim alınıp Rektörlüğe imzaya bırakılması",
+  "8. İmza sürecinin sorgulanması ve çıktığında taranarak ortak klasöre yüklenmesi",
+  "9. Bir nüsha aslının karşı tarafa kargo edilmesi",
+  "10. Diğer nüsha aslının hukuk departmanına teslim edilmesi",
+  "11. Hukuk departmanının Arelim sistemine kaydı (iş yoğunluğu nedeniyle bazen gecikmeli)",
+  "12. EBYS'ye yükleme süreci"
+];
+
+const CurrentSituationSection = () => {
+  const [isTooltipVisible, setTooltipVisible] = useState(false);
+
+  return (
+    <section className="bg-white rounded-lg shadow-lg p-6 md:p-8">
+      <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Mevcut Durum: Verimsiz ve Yavaş Bir Süreç</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <h3 className="text-xl font-semibold text-[#CA6702] mb-4">Süreç Neden Bu Kadar Uzun?</h3>
+          <p className="mb-6 text-gray-600">Mevcut iş akışımız, iletişim karmaşası, uzun hukuki yazışmalar, fiziksel belge yönetimi ve çok sayıda onay beklemesi gibi manuel adımlarla doludur. Bu durum, verimsizliğe ve yüksek hata riskine yol açmaktadır.</p>
+          <div className="flex flex-wrap gap-4">
+            <div 
+              className="relative"
+              onMouseEnter={() => setTooltipVisible(true)}
+              onMouseLeave={() => setTooltipVisible(false)}
+            >
+              <div className="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full cursor-pointer">12 Ayrı Süreç Adımı</div>
+              {isTooltipVisible && (
+                <div className="absolute z-10 w-80 p-3 -mt-2 text-sm text-white transition-opacity duration-300 bg-gray-900 rounded-lg shadow-sm bottom-full mb-2">
+                  <ul className="space-y-1 list-none pl-0">
+                    {processSteps.map((step, index) => (
+                      <li key={index} className="text-left">{step}</li>
+                    ))}
+                  </ul>
+                   <div className="tooltip-arrow" data-popper-arrow></div>
+                </div>
+              )}
+            </div>
+            <div className="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full">Yüksek Hata Riski</div>
+            <div className="bg-[#E9D8A6] text-[#CA6702] font-bold py-2 px-4 rounded-full">Çoklu İnsan Müdahalesi</div>
+          </div>
+        </div>
+        <div className="relative w-full max-w-lg mx-auto h-64 md:h-80">
+          <BarChart />
+        </div>
+      </div>
+    </section>
+  );
+};
+// --- END OF components/CurrentSituationSection.tsx ---
+
+// --- START OF components/BenchmarkAnalysisSection.tsx ---
+const BenchmarkAnalysisSection = () => {
+  return (
+    <section>
+      <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Sektör Ne Yapıyor? Benchmark Analizi</h2>
+      <div className="overflow-x-auto bg-white rounded-lg shadow-lg p-6">
+        <p className="text-gray-600 mb-6 text-center max-w-3xl mx-auto">Yaptığımız araştırma, önde gelen üniversitelerin genel işbirlikleri için bizimki gibi uzun ve yazılı protokol süreçlerine girmediğini gösteriyor. Mevcut yaklaşımımız, sektör standartlarının dışında kalmaktadır.</p>
+        
+        <div className="text-center mb-8">
+          <a 
+            href="https://areledutr-my.sharepoint.com/:x:/g/personal/yavuzselimonal_arel_edu_tr/EdOcZdk6yFhLp6kgAcTHI8MBjRg8SFujJpfpGwLejTxdAw?e=6wuCvW" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="inline-flex items-center bg-[#005F73] text-white font-semibold py-2 px-4 rounded-lg hover:bg-[#0A9396] transition duration-300 text-sm shadow"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Görüşme Detaylarını İndir
+          </a>
+        </div>
+
+        <table className="w-full min-w-max text-left">
+          <thead>
+            <tr className="border-b-2 border-[#0A9396]">
+              <th className="p-4 text-lg font-semibold text-[#005F73]">Üniversite</th>
+              <th className="p-4 text-lg font-semibold text-[#005F73]">Yaklaşım</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="border-b border-gray-200">
+              <td className="p-4 font-medium">Bahçeşehir Üniversitesi</td>
+              <td className="p-4 text-gray-700">Sadece sistematik (Co-Op vb.) işbirliklerinde basılı protokol kullanılıyor.</td>
+            </tr>
+            <tr className="border-b border-gray-200 bg-gray-50">
+              <td className="p-4 font-medium">Yeditepe Üniversitesi</td>
+              <td className="p-4 text-gray-700">Protokol imzalanmıyor, staj sözleşmeleri işbirliği sayılıyor.</td>
+            </tr>
+            <tr className="border-b border-gray-200">
+              <td className="p-4 font-medium">Bilgi Üniversitesi</td>
+              <td className="p-4 text-gray-700">Yalnızca yasal zorunluk (Markalı Ders vb.) durumlarında protokol imzalanıyor.</td>
+            </tr>
+            <tr className="bg-gray-50">
+              <td className="p-4 font-medium">Özyeğin Üniversitesi</td>
+              <td className="p-4 text-gray-700">Kariyer Merkezi, sektörel işbirlikleri için protokol sürecine girmiyor.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
+};
+// --- END OF components/BenchmarkAnalysisSection.tsx ---
+
+// --- START OF components/DigitalForm.tsx ---
+const iller = [
+    "Adana", "Adıyaman", "Afyonkarahisar", "Ağrı", "Amasya", "Ankara", "Antalya", "Artvin", "Aydın", "Balıkesir", "Bilecik", "Bingöl", "Bitlis", "Bolu", "Burdur", "Bursa", "Çanakkale", "Çankırı", "Çorum", "Denizli", "Diyarbakır", "Edirne", "Elazığ", "Erzincan", "Erzurum", "Eskişehir", "Gaziantep", "Giresun", "Gümüşhane", "Hakkari", "Hatay", "Isparta", "Mersin", "İstanbul", "İzmir", "Kars", "Kastamonu", "Kayseri", "Kırklareli", "Kırşehir", "Kocaeli", "Konya", "Kütahya", "Malatya", "Manisa", "Kahramanmaraş", "Mardin", "Muğla", "Muş", "Nevşehir", "Niğde", "Ordu", "Rize", "Sakarya", "Samsun", "Siirt", "Sinop", "Sivas", "Tekirdağ", "Tokat", "Trabzon", "Tunceli", "Şanlıurfa", "Uşak", "Van", "Yozgat", "Zonguldak", "Aksaray", "Bayburt", "Karaman", "Kırıkkale", "Batman", "Şırnak", "Bartın", "Ardahan", "Iğdır", "Yalova", "Karabük", "Kilis", "Osmaniye", "Düzce"
+];
+
+const ilceVerileri = {
+    "İstanbul": ["Adalar", "Arnavutköy", "Ataşehir", "Avcılar", "Bağcılar", "Bahçelievler", "Bakırköy", "Başakşehir", "Bayrampaşa", "Beşiktaş", "Beykoz", "Beylikdüzü", "Beyoğlu", "Büyükçekmece", "Çatalca", "Çekmeköy", "Esenler", "Esenyurt", "Eyüpsultan", "Fatih", "Gaziosmanpaşa", "Güngören", "Kadıköy", "Kağıthane", "Kartal", "Küçükçekmece", "Maltepe", "Pendik", "Sancaktepe", "Sarıyer", "Silivri", "Sultanbeyli", "Sultangazi", "Şile", "Şişli", "Tuzla", "Ümraniye", "Üsküdar", "Zeytinburnu"],
+    "Ankara": ["Akyurt", "Altındağ", "Ayaş", "Bala", "Beypazarı", "Çamlıdere", "Çankaya", "Çubuk", "Elmadağ", "Etimesgut", "Evren", "Gölbaşı", "Güdül", "Haymana", "Kalecik", "Kazan", "Keçiören", "Kızılcahamam", "Mamak", "Nallıhan", "Polatlı", "Pursaklar", "Sincan", "Şereflikoçhisar", "Yenimahalle"],
+    "İzmir": ["Aliağa", "Balçova", "Bayındır", "Bayraklı", "Bergama", "Bornova", "Buca", "Çeşme", "Çiğli", "Dikili", "Foça", "Gaziemir", "Güzelbahçe", "Karabağlar", "Karaburun", "Karşıyaka", "Kemalpaşa", "Kınık", "Kiraz", "Konak", "Menderes", "Menemen", "Narlıdere", "Ödemiş", "Seferihisar", "Selçuk", "Tire", "Torbalı", "Urla"]
+};
+
+const vergiDaireleriData = {
+    "İstanbul": ["Adalar Vergi Dairesi", "Alemdar Vergi Dairesi", "Anadolu Kurumlar Vergi Dairesi", "Avcılar Vergi Dairesi", "Avrupa Kurumlar Vergi Dairesi", "Bağcılar Vergi Dairesi", "Bakırköy Vergi Dairesi", "Başakşehir Vergi Dairesi", "Bayrampaşa Vergi Dairesi", "Beşiktaş Vergi Dairesi", "Beyazıt Vergi Dairesi", "Beykoz Vergi Dairesi", "Beylikdüzü Vergi Dairesi", "Beyoğlu Vergi Dairesi", "Büyük Mükellefler Vergi Dairesi Başkanlığı", "Büyükçekmece Vergi Dairesi", "Çatalca Vergi Dairesi", "Esenler Vergi Dairesi", "Esenyurt Vergi Dairesi", "Fatih Vergi Dairesi", "Gazi Vergi Dairesi", "Gaziosmanpaşa Vergi Dairesi", "Güngören Vergi Dairesi", "Halkalı Vergi Dairesi", "Harbiye Vergi Dairesi", "Kadıköy Vergi Dairesi", "Kağıthane Vergi Dairesi", "Kartal Vergi Dairesi", "Kasapzade Vergi Dairesi", "Küçükçekmece Vergi Dairesi", "Küçükköy Vergi Dairesi", "Maltepe Vergi Dairesi", "Marmara Kurumlar Vergi Dairesi", "Maslak Vergi Dairesi", "Mecidiyeköy Vergi Dairesi", "Merter Vergi Dairesi", "Nakil Vasıtaları Vergi Dairesi", "Pendik Vergi Dairesi", "Sarıgazi Vergi Dairesi", "Sarıyer Vergi Dairesi", "Silivri Vergi Dairesi", "Sultanbeyli Vergi Dairesi", "Şile Vergi Dairesi", "Şişli Vergi Dairesi", "Tuzla Vergi Dairesi", "Ümraniye Vergi Dairesi", "Üsküdar Vergi Dairesi", "Yakacık Vergi Dairesi", "Yenibosna Vergi Dairesi", "Yıldırım Vergi Dairesi", "Zeytinburnu Vergi Dairesi"],
+    "Ankara": ["Akyurt Vergi Dairesi", "Alemdağ Vergi Dairesi", "Altındağ Vergi Dairesi", "Ankara Kurumlar Vergi Dairesi", "Ayaş Vergi Dairesi", "Bala Vergi Dairesi", "Başkent Vergi Dairesi", "Beypazarı Vergi Dairesi", "Çamlıdere Vergi Dairesi", "Çankaya Vergi Dairesi", "Çubuk Vergi Dairesi", "Doğanbey Vergi Dairesi", "Elmadağ Vergi Dairesi", "Etimesgut Vergi Dairesi", "Evren Vergi Dairesi", "Gölbaşı Vergi Dairesi", "Güdül Vergi Dairesi", "Haymana Vergi Dairesi", "Kahramankazan Vergi Dairesi", "Kalecik Vergi Dairesi", "Kavaklıdere Vergi Dairesi", "Keçiören Vergi Dairesi", "Kızılbey Vergi Dairesi", "Kızılcahamam Vergi Dairesi", "Kocatepe Vergi Dairesi", "Maltepe Vergi Dairesi", "Mamak Vergi Dairesi", "Mithatpaşa Vergi Dairesi", "Nallıhan Vergi Dairesi", "Ostim Vergi Dairesi", "Polatlı Vergi Dairesi", "Pursaklar Vergi Dairesi", "Seğmenler Vergi Dairesi", "Sincan Vergi Dairesi", "Şereflikoçhisar Vergi Dairesi", "Ulus Vergi Dairesi", "Veraset ve Harçlar Vergi Dairesi", "Yahya Galip Vergi Dairesi", "Yeğenbey Vergi Dairesi", "Yenimahalle Vergi Dairesi"],
+    "İzmir": ["Aliağa Vergi Dairesi", "Balçova Vergi Dairesi", "Bayındır Vergi Dairesi", "Bayraklı Vergi Dairesi", "Bergama Vergi Dairesi", "Beydağ Vergi Dairesi", "Bornova Vergi Dairesi", "Buca Vergi Dairesi", "Çeşme Vergi Dairesi", "Çiğli Vergi Dairesi", "Dikili Vergi Dairesi", "Ege Vergi Dairesi", "Foça Vergi Dairesi", "Gaziemir Vergi Dairesi", "Güzelbahçe Vergi Dairesi", "Hasan Tahsin Vergi Dairesi", "Kadifekale Vergi Dairesi", "Karabağlar Vergi Dairesi", "Karaburun Vergi Dairesi", "Karşıyaka Vergi Dairesi", "Kemalpaşa Vergi Dairesi", "Kınık Vergi Dairesi", "Kiraz Vergi Dairesi", "Konak Vergi Dairesi", "Kordon Vergi Dairesi", "Menderes Vergi Dairesi", "Menemen Vergi Dairesi", "Narlıdere Vergi Dairesi", "Ödemiş Vergi Dairesi", "Seferihisar Vergi Dairesi", "Selçuk Vergi Dairesi", "Şirinyer Vergi Dairesi", "Tire Vergi Dairesi", "Torbalı Vergi Dairesi", "Urla Vergi Dairesi"]
+};
+
+const faaliyetAlanlari = [
+    "Ajans (Reklam/Pazarlama/İletişim)", "Danışmanlık", "Bilişim ve Teknoloji", "Finans ve Sigortacılık", "Eğitim", "Sağlık Hizmetleri", "Üretim ve Sanayi", "İnşaat ve Gayrimenkul",
+    "Perakende ve Ticaret", "Turizm ve Otelcilik", "Gıda ve Restoran", "Lojistik ve Taşımacılık", "Hukuk", "Medya ve Yayıncılık", "Enerji", "Otomotiv", "Diğer"
+];
+
+const bolumlerData = {
+    "FAKÜLTELER": {
+        "FEN - EDEBİYAT FAKÜLTESİ": ["Bilgi Güvenliği Teknolojisi", "Bilgi Güvenliği Mülakat Simülasyonu", "Bilgi Güvenliği Zirvesi", "İngiliz Dili ve Edebiyatı", "Moleküler Biyoloji ve Genet...", "Mütercim ve Tercümanlık", "Psikoloji", "Sosyoloji", "Türk Dili ve Edebiyatı"],
+        "GÜZEL SANATLAR FAKÜLTESİ": ["Çizgi Film ve Animasyon", "Gastronomi ve Mutfak Sanatları", "Grafik Tasarımı"],
+        "İKTİSADİ VE İDARİ BİLİMLER FAKÜLTESİ": ["Finans ve Bankacılık", "Havacılık Yönetimi", "İşletme Bölümü", "Lojistik Yönetimi", "Uluslararası İlişkiler Bölümü", "Uluslararası Ticaret ve Finansman", "Yönetim Bilişim Sistemleri"],
+        "İLETİŞİM FAKÜLTESİ": ["Gazetecilik", "Görsel İletişim Tasarımı", "Halkla İlişkiler ve Reklamcılık", "Sinema ve Televisyon", "Yeni Medya ve İletişim"],
+        "MİMARLIK FAKÜLTESİ": ["İç Mimarlık", "Mimarlık"],
+        "MÜHENDİSLİK FAKÜLTESİ": ["Bilgisayar Mühendisliği", "Bilgisayar Mühendisliği (İng)", "Biyomedikal Mühendisliği", "Elektrik - Elektronik Mühendisliği", "Elektrik - Elektronik Mühendisliği (İng)", "Endüstri Mühendisliği", "İnşaat Mühendisliği", "Makine Mühendisliği", "Yazılım Mühendisliği"],
+        "SAĞLIK BİLİMLERİ FAKÜLTESİ": ["Beslenme ve Diyetetik", "Çocuk Gelişimi", "Fizyoterapi ve Rehabilitasyon", "Hemşirelik", "Sağlık Yönetimi", "Sosyal Hizmet"]
+    },
+    "MESLEK YÜKSEK OKULU": {
+        "BİLGİSAYAR TEKNOLOJİLERİ": ["Bilgisayar Destekli Tasarım ve Animasyon", "Bilgisayar Programcılığı"],
+        "Büro Hizmetleri ve Sekreterlik": ["Adalet Programı", "Mahkeme Büro Hizmetleri"],
+        "ÇOCUK BAKIM ve GENÇLİK HİZMETLERİ": ["Çocuk Gelişimi"],
+        "DIŞ TİCARET": ["Dış Ticaret"],
+        "DİŞÇİLİK HİZMETLERİ": ["Ağız ve Diş Sağlığı", "Diş Protez Teknolojisi"],
+        "ELEKTRİK ve ENERJİ": ["Elektrik Enerjisi Üretim, İletim Ve Dağıtımı Programı"],
+        "ELEKTRONİK ve OTOMASYON": ["Elektronik Teknolojisi", "Mekatronik"],
+        "FİNANS - BANKACILIK ve SİGORTACILIK": ["Bankacılık ve Sigortacılık"],
+        "GÖRSEL-İŞİTSEL TEKNİKLER ve MEDYA YAPIMCILIĞI": ["Radyo ve Televizyon Programcılığı"],
+        "İNŞAT": ["Yapı Tesisat Teknolojisi Programı"],
+        "MAKİNE ve METAL TEKNOLOJİLERİ": ["CNC Programlama Ve Operatörlüğü Programı"],
+        "MİMARLIK VE ŞEHİR PLANLAMÁ": ["Mimari Restorasyon"],
+        "MOTORLU ARAÇLAR ve ULAŞTIRMA TEKNOLOJİLERİ": ["Uçak Teknolojisi"],
+        "MUHASEBE ve VERGİ": ["Muhasebe ve Vergi Uygulamaları"],
+        "MÜLKİYET KORUMA ve GÜVENLİK": ["İş Sağlığı ve Güvenliği"],
+        "OTEL, LOKANTA ve İKRAM HİZMETLERİ": ["Aşçılık"],
+        "SEYAHAT-TURİZM VE EĞLENGE HİZMETLERİ": ["Turist Rehberliği"],
+        "TASARIM": ["Grafik Tasarımı", "Moda Tasarımı"],
+        "TERAPİ ve REHABİLİTASYON": ["Fizyoterapi"],
+        "TIBBİ HİZMETLER ve TEKNİKLER": ["Anestezi", "İlk ve Acil Yardım", "Optisyenlik", "Tıbbi Dokümantasyon ve Sekreterlik", "Tıbbi Görüntüleme Teknikleri", "Tıbbi Laboratuvar Teknikleri"],
+        "ULAŞTIRMA HİZMETLERİ": ["Sivil Hava Ulaştırma İşletmeciliği", "Sivil Havacılık Kabin Hizmetleri"],
+        "YABANCI DİLLER ve KÜLTÜRLER": ["Uygulamalı İngilizce ve Çevirmenlik"],
+        "YÖNETİM VE ORGANİZASYON": ["İnsan Kaynakları Yönetimi", "İşletme Yönetimi", "Lojistik"]
+    }
+};
+
+const allDepartments = Object.values(bolumlerData).flatMap(faculty => Object.values(faculty).flat());
+
+const faaliyetAlaniBolumMapping = {
+    "Bilişim ve Teknoloji": ["Bilgisayar Mühendisliği", "Yazılım Mühendisliği", "Yönetim Bilişim Sistemleri", "Bilgi Güvenliği Teknolojisi", "Bilgisayar Programcılığı"],
+    "Ajans (Reklam/Pazarlama/İletişim)": ["Halkla İlişkiler ve Reklamcılık", "Görsel İletişim Tasarımı", "Yeni Medya ve İletişim", "Grafik Tasarımı"],
+    "Finans ve Sigortacılık": ["Finans ve Bankacılık", "Uluslararası Ticaret ve Finansman", "Bankacılık ve Sigortacılık"],
+    "Sağlık Hizmetleri": ["Hemşirelik", "Fizyoterapi ve Rehabilitasyon", "Beslenme ve Diyetetik", "Sağlık Yönetimi", "Tıbbi Laboratuvar Teknikleri"],
+    "İnşaat ve Gayrimenkul": ["İnşaat Mühendisliği", "Mimarlık", "İç Mimarlık", "Mimari Restorasyon"],
+};
+
+const getAiDepartmentSuggestions = (selectedAlanlar) => {
+    const suggestions = new Set();
+    selectedAlanlar.forEach(alan => {
+        const mappedBolumler = faaliyetAlaniBolumMapping[alan];
+        if (mappedBolumler) {
+            mappedBolumler.forEach(bolum => suggestions.add(bolum));
+        }
+    });
+    return Array.from(suggestions);
+};
+
+const initialFormData = {
+    kurumIsmi: '', kurumTipi: '', ticariUnvan: '', vergiDairesi: '', vergiNo: '', acikAdres: '', il: '', ilce: '', faaliyetAlani: [], webSitesi: '', grupSirket: '',
+    logoDosyasi: null, logoDosyasiAdi: '', yetkiliIsimSoyisim: '', iletisimKisiIsmi: '', iletisimKisiUnvani: '', mobilTelefon: '', epostaAdresi: '', ikGrupMail: '',
+    ekYetkiliIsimSoyisim: '', ekYetkiliMobilTelefon: '', ekYetkiliEposta: '', calisanSayisi: '',
+    stajOnerisi: null, mezunOnerisi: null, kariyerGunleriDavet: null, teknikGezi: null, bitirmeProjesi: null, markaliDersler: null, projeIsbirligi: null,
+    ilgilenilenBolumler: [],
+    lisansIndirimKabul: true, kvkkOnay: false, kamuPaylasimOnay: false, universitePersoneli: '',
+};
+
+
+const DigitalForm = () => {
+    const [currentStep, setCurrentStep] = useState('form'); // 'form', 'verification', 'success'
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitError, setSubmitError] = useState(false);
+    const [showEkYetkili, setShowEkYetkili] = useState(false);
+    const [formData, setFormData] = useState(initialFormData);
+    const [emailErrors, setEmailErrors] = useState({ epostaAdresi: '', ikGrupMail: '', ekYetkiliEposta: '' });
+    const [ilceler, setIlceler] = useState([]);
+    const [vergiDairesiSecenekleri, setVergiDairesiSecenekleri] = useState([]);
+    const [activeInfoPopup, setActiveInfoPopup] = useState(null);
+    const [verificationCodes, setVerificationCodes] = useState({ sms: '', email: '' });
+    
+    // Timer states
+    const [smsTimer, setSmsTimer] = useState(0);
+    const [emailTimer, setEmailTimer] = useState(0);
+    const [isSmsTimerActive, setIsSmsTimerActive] = useState(false);
+    const [isEmailTimerActive, setIsEmailTimerActive] = useState(false);
+
+    useEffect(() => {
+        const suggestions = getAiDepartmentSuggestions(formData.faaliyetAlani);
+        setFormData(prev => ({ ...prev, ilgilenilenBolumler: suggestions }));
+    }, [formData.faaliyetAlani]);
+
+    // Timer logic for SMS
+    useEffect(() => {
+        if (!isSmsTimerActive) return;
+        if (smsTimer <= 0) {
+            setIsSmsTimerActive(false);
+            return;
+        }
+        const intervalId = setInterval(() => {
+            setSmsTimer(prev => prev - 1);
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [isSmsTimerActive, smsTimer]);
+
+    // Timer logic for Email
+    useEffect(() => {
+        if (!isEmailTimerActive) return;
+        if (emailTimer <= 0) {
+            setIsEmailTimerActive(false);
+            return;
+        }
+        const intervalId = setInterval(() => {
+            setEmailTimer(prev => prev - 1);
+        }, 1000);
+        return () => clearInterval(intervalId);
+    }, [isEmailTimerActive, emailTimer]);
+
+    const handleSendCode = (type) => {
+        if (type === 'sms') {
+            console.log('Sending SMS code to', formData.mobilTelefon);
+            setSmsTimer(120);
+            setIsSmsTimerActive(true);
+        } else if (type === 'email') {
+            console.log('Sending Email code to', formData.epostaAdresi);
+            setEmailTimer(120);
+            setIsEmailTimerActive(true);
+        }
+    };
+    
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        if (name === 'il') {
+            setFormData(prev => ({ ...prev, ilce: '', vergiDairesi: '' }));
+            setIlceler(ilceVerileri[value] || []);
+            setVergiDairesiSecenekleri(vergiDaireleriData[value] || []);
+        }
+    };
+    
+    const handleFaaliyetAlaniChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData(prev => {
+            const currentAlanlar = prev.faaliyetAlani;
+            if (checked) {
+                return { ...prev, faaliyetAlani: [...currentAlanlar, value] };
+            } else {
+                return { ...prev, faaliyetAlani: currentAlanlar.filter(alan => alan !== value) };
+            }
         });
+    };
+
+    const handleBolumChange = (e) => {
+        const { value, checked } = e.target;
+        setFormData(prev => {
+            const currentBolumler = prev.ilgilenilenBolumler;
+            if (checked) {
+                return { ...prev, ilgilenilenBolumler: [...currentBolumler, value] };
+            } else {
+                return { ...prev, ilgilenilenBolumler: currentBolumler.filter(bolum => bolum !== value) };
+            }
+        });
+    };
+    
+    const handleSelectAllBolumler = (e) => {
+        if (e.target.checked) {
+            setFormData(prev => ({...prev, ilgilenilenBolumler: allDepartments}));
+        } else {
+            setFormData(prev => ({...prev, ilgilenilenBolumler: []}));
+        }
+    };
+
+    const handleRadioChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value === 'true' }));
+    };
+
+    const handleCheckboxChange = (e) => {
+        const { name, checked } = e.target;
+        setFormData(prev => ({ ...prev, [name]: checked }));
+    };
+
+    const handleLogoUpload = (e) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            if (file.size > 2 * 1024 * 1024) {
+                alert("Dosya boyutu 2MB'tan büyük olamaz.");
+                e.target.value = '';
+                setFormData(prev => ({ ...prev, logoDosyasi: null, logoDosyasiAdi: '' }));
+                return;
+            }
+            setFormData(prev => ({ ...prev, logoDosyasi: file, logoDosyasiAdi: file.name }));
+        }
+    };
+
+    const validateCorporateEmail = (field) => {
+        const email = formData[field];
+        if (email) {
+            const commonProviders = ['gmail.com', 'yahoo.com', 'hotmail.com', 'outlook.com', 'yandex.com', 'icloud.com', 'mail.ru', 'aol.com', 'protonmail.com'];
+            const domain = email.split('@')[1];
+            if (commonProviders.includes(domain?.toLowerCase())) {
+                setEmailErrors(prev => ({ ...prev, [field]: 'Lütfen kurumsal e-posta adresi kullanınız.' }));
+            } else {
+                setEmailErrors(prev => ({ ...prev, [field]: '' }));
+            }
+        } else {
+            setEmailErrors(prev => ({ ...prev, [field]: '' }));
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (Object.values(emailErrors).some(error => error !== '')) {
+            alert('Lütfen e-posta hatalarını düzeltin.');
+            return;
+        }
+        setCurrentStep('verification');
+    };
+    
+    const handleVerificationSubmit = (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitError(false);
+        setTimeout(() => {
+            if (verificationCodes.sms && verificationCodes.email) { 
+                setIsSubmitting(false);
+                setCurrentStep('success');
+            } else {
+                setIsSubmitting(false);
+                setSubmitError(true);
+                alert("Lütfen doğrulama kodlarını giriniz.")
+            }
+        }, 1500);
+    };
+
+    const resetForm = () => {
+        setCurrentStep('form');
+        setFormData(initialFormData);
+        setEmailErrors({ epostaAdresi: '', ikGrupMail: '', ekYetkiliEposta: '' });
+        setIlceler([]);
+        setShowEkYetkili(false);
+        setVergiDairesiSecenekleri([]);
+        setVerificationCodes({ sms: '', email: '' });
+        setIsSmsTimerActive(false);
+        setIsEmailTimerActive(false);
+        setSmsTimer(0);
+        setEmailTimer(0);
+    };
+    
+    const collaborationAreas = [
+        { key: 'stajOnerisi', label: 'Staj/İşyerinde Mesleki Eğitim için öğrenci yönlendirmemizi ister misiniz?' },
+        { key: 'mezunOnerisi', label: 'Açık pozisyonlarınız için mezun yönlendirmemizi ister misiniz?' },
+        { key: 'kariyerGunleriDavet', label: 'Kariyer Günleri, Zirveler, Seminer/Söyleşi programlarına davet almak ister misiniz?' },
+        { key: 'teknikGezi', label: 'Teknik Gezi kapsamında ilgili öğrenci grubu ile ofis/fabrika ziyaretinde bulunabilir miyiz?', info: 'Öğrencilerimizin teorik bilgilerini pratikle birleştirmeleri için kurumunuzda teknik bir gezi düzenleyerek, çalışma ortamınızı ve süreçlerinizi yerinde görmelerini sağlayabiliriz.' },
+        { key: 'bitirmeProjesi', label: 'Öğrencilerimizin bitirme projeleri dersine proje vermek ister misiniz?', info: 'Öğrencilerimiz, kurumunuzun belirleyeceği bir problem veya konu üzerine bitirme projeleri hazırlayabilirler. Bu, hem öğrencilerimiz için gerçek bir sektör deneyimi hem de kurumunuz için yenilikçi çözümler anlamına gelir.' },
+        { key: 'markaliDersler', label: 'Markalı Dersler eğitim programımız kapsamında müfredatımıza ortak seçmeli dersler eklemek ister misiniz?', info: 'Kurumunuzun uzmanlık alanıyla ilgili, müfredatımıza entegre edilecek \'Markalı bir ders\' oluşturabiliriz. Dersin içeriği ve eğitmenleri sizin tarafınızdan belirlenebilir, bu da potansiyel yetenekleri erken aşamada tanımanızı sağlar.' },
+        { key: 'projeIsbirligi', label: 'KOSGEB, TÜBİTAK gibi kuruluşların sunduğu destek ve hibelerden yararlanabileceğiniz projelerde iş birliği yapmak ister misiniz?', info: 'Üniversitemizin akademik birikimi ve kurumunuzun sektör deneyimini birleştirerek KOSGEB, TÜBİTAK gibi kuruluşların hibe ve destek programlarına ortak projelerle başvurabiliriz.' },
+    ];
+
+
+    if (currentStep === 'success') {
+        return (
+            <div className="text-center p-8">
+                <h2 className="text-2xl font-bold text-green-700">Form Başarıyla Gönderildi!</h2>
+                <p className="mt-4 text-gray-600">Başvurunuz için teşekkür ederiz. İşbirliğimizin onaylanması durumunda tarafınıza e-posta ile resmi bilgilendirme yapılacaktır.</p>
+                <button onClick={resetForm} className="mt-6 inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Yeni Form Doldur
+                </button>
+            </div>
+        );
+    }
+    
+    if (currentStep === 'verification') {
+        return (
+            <div className="p-8">
+                 <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">Doğrulama</h2>
+                 <p className="text-center text-gray-600 mb-6">
+                    Lütfen <strong className="text-gray-800">{formData.mobilTelefon}</strong> numaralı telefonunuza ve <strong className="text-gray-800">{formData.epostaAdresi}</strong> adresinize gönderilen doğrulama kodlarını giriniz.
+                 </p>
+                 <form onSubmit={handleVerificationSubmit}>
+                    <div className="grid grid-cols-1 gap-6 max-w-lg mx-auto">
+                        <div>
+                            <label htmlFor="smsCode" className="block text-sm font-medium text-gray-700">SMS Onay Kodu *</label>
+                            <div className="mt-1 flex rounded-md shadow-sm">
+                                <input 
+                                    type="text" 
+                                    id="smsCode" 
+                                    value={verificationCodes.sms}
+                                    onChange={(e) => setVerificationCodes(prev => ({ ...prev, sms: e.target.value }))}
+                                    required 
+                                    className="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                                {!isSmsTimerActive ? (
+                                    <button type="button" onClick={() => handleSendCode('sms')} className="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 rounded-r-md text-sm font-medium hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                       {smsTimer > 0 ? 'Tekrar Gönder' : 'Gönder'}
+                                    </button>
+                                ) : (
+                                    <span className="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-500 rounded-r-md text-sm">
+                                        {Math.floor(smsTimer / 60)}:{('0' + smsTimer % 60).slice(-2)}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                         <div>
+                            <label htmlFor="emailCode" className="block text-sm font-medium text-gray-700">E-posta Onay Kodu *</label>
+                             <div className="mt-1 flex rounded-md shadow-sm">
+                                <input 
+                                    type="text" 
+                                    id="emailCode"
+                                    value={verificationCodes.email}
+                                    onChange={(e) => setVerificationCodes(prev => ({ ...prev, email: e.target.value }))}
+                                    required
+                                    className="flex-1 block w-full px-3 py-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                                {!isEmailTimerActive ? (
+                                     <button type="button" onClick={() => handleSendCode('email')} className="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 rounded-r-md text-sm font-medium hover:bg-gray-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                       {emailTimer > 0 ? 'Tekrar Gönder' : 'Gönder'}
+                                    </button>
+                                ) : (
+                                    <span className="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-500 rounded-r-md text-sm">
+                                         {Math.floor(emailTimer / 60)}:{('0' + emailTimer % 60).slice(-2)}
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                     <div className="mt-8 text-center">
+                        <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                            {isSubmitting ? 'Doğrulanıyor...' : 'Doğrula ve Bitir'}
+                        </button>
+                        {submitError && <p className="mt-2 text-sm text-red-600">Doğrulama sırasında bir hata oluştu. Lütfen tekrar deneyin.</p>}
+                    </div>
+                 </form>
+                 <div className="text-center mt-4">
+                    <button onClick={() => setCurrentStep('form')} className="text-sm text-indigo-600 hover:text-indigo-800">Geri Dön ve Düzelt</button>
+                 </div>
+            </div>
+        );
+    }
+
+
+    return (
+        <div>
+            <div className="text-center mb-6">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlgAAACGCAMAAAArv66yAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAMAUExURQAAAAEBAQICAjAwMDU1NUBBQVFRUWBgYGdnaGhoaqCgoL+/v8DAwNTU1Nzc3N/f3+vr6+/v7/f39////wEBAQsLCxQUFBkZGRwcHCIiIjExMTc3Nzw8PEJCQkdHR0tLS1ZWVltbW2RkZGxsbHJycn5+foSEhIyMjJSUlJycnKWlpaysrLa2trm5ub+/v8XFxdXV1dnZ2eLi4uXl5ezs7O/v7/Pz8/b29v39/QEBAQoKCg8PDxISEhYWFhsbGx4eHiAgICEhISQkJCYmJicnJygoKCwsLC4uLjIyMjQ0NDY2Njk5OTs7Ozw8PD4+PkBAQEFBQUJCQkREREVFRUZGRkhISEpKSkxMTE1NTU9PT1BQUFJSUlRUVFVVVVZWVlhYWFpaWlxcXF1dXV5eXl9fX2BgYGFhYWJiYmNjY2RkZGVlZWZmZmdnZ2hoaGlpaWpqamtra2xsbG1tbW5ubm9vb3BwcHFxcXJycnNzc3R0dHV1dXZ2dnd3d3h4eHl5eXp6ent7e3x8fH19fX5+fn9/f4CAgIGBgYKCgoODg4SEhIWFhYaGhoeHh4iIiImJiYqKiouLi4yMjI2NjY6Ojo+Pj5CQkJGRkZKSkpOTk5SUlJWVlZaWlpeXl5iYmJmZmZqampubm5ycnJ2dnZ6enp+fn6CgoKGhoaKioqOjo6SkpKWlpaampqenp6ioqKmpqaqqqqurq6ysrK2tra6urq+vr7CwsLGxsbKysrOzs7S0tLW1tba2tre3t7i4uLm5ubq6uru7u7y8vL29vb6+vr+/v8DAwMHBwcLCwsPDw8TExMXFxcbGxsfHx8jIyMnJycrKysvLy8zMzM3Nzc7Ozs/Pz9DQ0NHR0dLS0tPT09TU1NXV1dbW1tfX19jY2NnZ2dra2tvb29zc3N3d3d7e3t/f3+Dg4OHh4eLi4uPj4+Tk5OXl5ebm5ufn5+jo6Onp6erq6uvr6+zs7O3t7e7u7u/v7/Dw8PHx8fLy8vPz8/T09PX11c/A3fcAAA7ASURBVHja7Z15UBPbtsfDZ1eAILiX7hS3pIi7m7sXGhcgR93d3d3d/fe+N4cDEgYIYTJ/n/N9frw/w0yck2+eZJ5cWkRCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQkJCQk-ygombb" alt="İstanbul Arel Üniversitesi Logosu" className="mx-auto mb-4 h-16 object-contain" />
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Kurumsal İşbirliği Formu</h1>
+                <p className="text-gray-600 mt-2">İstanbul Arel Üniversitesi ile işbirliği fırsatları için bilgilerinizi paylaşın.</p>
+                <div className="mt-4 text-left bg-blue-50 p-3 rounded-md border border-blue-200">
+                    <p className="text-xs text-blue-700 mb-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 inline-block mr-1 align-text-bottom"><path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /></svg>
+                        Bu formun doldurulması, taraflar (İstanbul Arel Üniversitesi ve başvuran kurum) için herhangi bir maddi veya gayri maddi yükümlülük doğurmaz. Bu form, potansiyel işbirliği alanlarını belirlemek ve iletişimi başlatmak amacıyla kullanılmaktadır.
+                    </p>
+                    <p className="text-xs text-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4 inline-block mr-1 align-text-bottom"><path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" /></svg>
+                        Kurumunuzun, İstanbul Arel Üniversitesi'ni işbirlikleri arasında (web sitesi, tanıtım materyalleri vb.) gösterebilmesi için Üniversite Kariyer Planlama Uygulama ve Araştırma Merkezi'nden ayrıca yazılı onay alınması gerekmektedir.
+                    </p>
+                </div>
+            </div>
+            <form id="partnershipForm" onSubmit={handleSubmit} noValidate>
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 border-b pb-2">Kurum Bilgileri</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label htmlFor="kurumIsmi" className="block text-sm font-medium text-gray-700">Kurum İsmi *</label>
+                        <input type="text" id="kurumIsmi" name="kurumIsmi" value={formData.kurumIsmi} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                     <div>
+                        <label htmlFor="kurumTipi" className="block text-sm font-medium text-gray-700">Kurum Tipi *</label>
+                        <select id="kurumTipi" name="kurumTipi" value={formData.kurumTipi} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option disabled value="">Seçiniz...</option>
+                            <option value="Kamu">Kamu</option>
+                            <option value="OzelSektor">Özel Sektor</option>
+                            <option value="STK">STK</option>
+                            <option value="MeslekOrgut">Meslek Örgütü</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="ticariUnvan" className="block text-sm font-medium text-gray-700">Ticari Unvan *</label>
+                        <input type="text" id="ticariUnvan" name="ticariUnvan" value={formData.ticariUnvan} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label htmlFor="vergiNo" className="block text-sm font-medium text-gray-700">Vergi No *</label>
+                        <input type="text" id="vergiNo" name="vergiNo" value={formData.vergiNo} onChange={handleInputChange} required pattern="\d{10}" title="Lütfen 10 haneli vergi numaranızı giriniz." className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div className="md:col-span-2">
+                        <label htmlFor="acikAdres" className="block text-sm font-medium text-gray-700">Açık Adres *</label>
+                        <textarea id="acikAdres" name="acikAdres" value={formData.acikAdres} onChange={handleInputChange} required rows={2} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
+                    </div>
+                    <div>
+                        <label htmlFor="il" className="block text-sm font-medium text-gray-700">İl *</label>
+                        <select id="il" name="il" value={formData.il} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option disabled value="">İl Seçiniz...</option>
+                            {iller.map(il => <option key={il} value={il}>{il}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="ilce" className="block text-sm font-medium text-gray-700">İlçe *</label>
+                        <select id="ilce" name="ilce" value={formData.ilce} onChange={handleInputChange} required disabled={!formData.il} className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50">
+                            <option disabled value="">İlçe Seçiniz...</option>
+                            {ilceler.map(ilce => <option key={ilce} value={ilce}>{ilce}</option>)}
+                        </select>
+                    </div>
+                     <div>
+                        <label htmlFor="vergiDairesi" className="block text-sm font-medium text-gray-700">Vergi Dairesi *</label>
+                         <select id="vergiDairesi" name="vergiDairesi" value={formData.vergiDairesi} onChange={handleInputChange} required disabled={!formData.il || vergiDairesiSecenekleri.length === 0} className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm disabled:bg-gray-50">
+                            <option disabled value="">Vergi Dairesi Seçiniz...</option>
+                            {vergiDairesiSecenekleri.map(daire => <option key={daire} value={daire}>{daire}</option>)}
+                        </select>
+                    </div>
+                    <div>
+                        <label htmlFor="webSitesi" className="block text-sm font-medium text-gray-700">Web Sitesi</label>
+                        <input type="url" id="webSitesi" name="webSitesi" value={formData.webSitesi} onChange={handleInputChange} placeholder="https://www.example.com" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                     <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700">Faaliyet Alanı *</label>
+                        <div className="mt-2 grid grid-cols-2 md:grid-cols-3 gap-2 border p-3 rounded-md max-h-40 overflow-y-auto">
+                            {faaliyetAlanlari.map(alan => (
+                                <label key={alan} className="flex items-center text-sm font-normal text-gray-700">
+                                    <input type="checkbox" value={alan} checked={formData.faaliyetAlani.includes(alan)} onChange={handleFaaliyetAlaniChange} className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+                                    <span className="ml-2">{alan}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+                    <div>
+                        <label htmlFor="grupSirket" className="block text-sm font-medium text-gray-700">Varsa Bağlı Bulunan Grup Şirket</label>
+                        <input type="text" id="grupSirket" name="grupSirket" value={formData.grupSirket} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label htmlFor="logoDosyasi" className="block text-sm font-medium text-gray-700">Kurum Logosu (JPEG, PNG, PDF)</label>
+                        <label htmlFor="logoDosyasi" className="file-input-label mt-1">Dosya Seç</label>
+                        <input type="file" id="logoDosyasi" onChange={handleLogoUpload} accept=".jpeg,.jpg,.png,.pdf" className="hidden" />
+                        {formData.logoDosyasiAdi && <span className="ml-2 text-sm text-gray-500">{formData.logoDosyasiAdi}</span>}
+                        <p className="mt-1 text-xs text-gray-500">Max dosya boyutu: 2MB.</p>
+                    </div>
+                </div>
+
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 mt-8 border-b pb-2">Yetkili ve İletişim Bilgileri</h3>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <label htmlFor="yetkiliIsimSoyisim" className="block text-sm font-medium text-gray-700">İmza Yetkilisi İsim Soyisim *</label>
+                        <input type="text" id="yetkiliIsimSoyisim" name="yetkiliIsimSoyisim" value={formData.yetkiliIsimSoyisim} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label htmlFor="iletisimKisiIsmi" className="block text-sm font-medium text-gray-700">İletişim Kurulacak Kişi İsmi *</label>
+                        <input type="text" id="iletisimKisiIsmi" name="iletisimKisiIsmi" value={formData.iletisimKisiIsmi} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label htmlFor="iletisimKisiUnvani" className="block text-sm font-medium text-gray-700">İletişim Kurulacak Kişi Unvanı *</label>
+                        <input type="text" id="iletisimKisiUnvani" name="iletisimKisiUnvani" value={formData.iletisimKisiUnvani} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label htmlFor="mobilTelefon" className="block text-sm font-medium text-gray-700">Mobil Telefon (Birincil İletişim/SMS Onayı İçin) *</label>
+                        <input type="tel" id="mobilTelefon" name="mobilTelefon" value={formData.mobilTelefon} onChange={handleInputChange} required pattern="[0-9]{10,11}" title="Lütfen 10 veya 11 haneli telefon numaranızı giriniz (örn: 5xxxxxxxxx)." placeholder="5xxxxxxxxx" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                    </div>
+                    <div className="md:col-span-2">
+                        <label htmlFor="epostaAdresi" className="block text-sm font-medium text-gray-700">E-posta Adresi (Birincil İletişim/E-posta Onayı İçin) *</label>
+                        <input type="email" id="epostaAdresi" name="epostaAdresi" value={formData.epostaAdresi} onChange={handleInputChange} onBlur={() => validateCorporateEmail('epostaAdresi')} required className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${emailErrors.epostaAdresi ? 'input-error border-red-500' : 'border-gray-300'}`} />
+                        {emailErrors.epostaAdresi && <p className="error-message">{emailErrors.epostaAdresi}</p>}
+                    </div>
+                    <div className="md:col-span-2">
+                        <label htmlFor="ikGrupMail" className="block text-sm font-medium text-gray-700">İnsan Kaynakları Departmanı Grup Mail Adresi (varsa)</label>
+                        <input type="email" id="ikGrupMail" name="ikGrupMail" value={formData.ikGrupMail} onChange={handleInputChange} onBlur={() => validateCorporateEmail('ikGrupMail')} className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${emailErrors.ikGrupMail ? 'input-error border-red-500' : 'border-gray-300'}`} />
+                        {emailErrors.ikGrupMail && <p className="error-message">{emailErrors.ikGrupMail}</p>}
+                    </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-gray-200">
+                    <div className="flex justify-between items-center mb-2">
+                        <h4 className="text-md font-medium text-gray-800">Ek Yetkili Bilgileri (Opsiyonel)</h4>
+                        <button type="button" onClick={() => setShowEkYetkili(!showEkYetkili)} className="text-indigo-600 hover:text-indigo-800 text-sm font-medium">
+                            {showEkYetkili ? 'Gizle' : 'Göster/Ekle'}
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" className="w-4 h-4 inline-block ml-1">
+                                <path strokeLinecap="round" strokeLinejoin="round" d={showEkYetkili ? 'M19.5 8.25l-7.5 7.5-7.5-7.5' : 'M8.25 4.5l7.5 7.5-7.5 7.5'} />
+                            </svg>
+                        </button>
+                    </div>
+                    {showEkYetkili && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-x-6 gap-y-4 bg-gray-50 p-4 rounded-md">
+                            <div>
+                                <label htmlFor="ekYetkiliIsimSoyisim" className="block text-sm font-medium text-gray-700">İsim Soyisim</label>
+                                <input type="text" id="ekYetkiliIsimSoyisim" name="ekYetkiliIsimSoyisim" value={formData.ekYetkiliIsimSoyisim} onChange={handleInputChange} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            </div>
+                            <div>
+                                <label htmlFor="ekYetkiliMobilTelefon" className="block text-sm font-medium text-gray-700">Mobil Telefon</label>
+                                <input type="tel" id="ekYetkiliMobilTelefon" name="ekYetkiliMobilTelefon" value={formData.ekYetkiliMobilTelefon} onChange={handleInputChange} pattern="[0-9]{10,11}" placeholder="5xxxxxxxxx" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+                            </div>
+                            <div>
+                                <label htmlFor="ekYetkiliEposta" className="block text-sm font-medium text-gray-700">E-posta Adresi</label>
+                                <input type="email" id="ekYetkiliEposta" name="ekYetkiliEposta" value={formData.ekYetkiliEposta} onChange={handleInputChange} onBlur={() => validateCorporateEmail('ekYetkiliEposta')} className={`mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm ${emailErrors.ekYetkiliEposta ? 'input-error border-red-500' : 'border-gray-300'}`} />
+                                {emailErrors.ekYetkiliEposta && <p className="error-message">{emailErrors.ekYetkiliEposta}</p>}
+                            </div>
+                        </div>
+                    )}
+                </div>
+
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4 mt-8 border-b pb-2">Diğer Bilgiler</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div className="md:col-span-2">
+                        <label htmlFor="calisanSayisi" className="block text-sm font-medium text-gray-700">Çalışan Sayısı *</label>
+                        <select id="calisanSayisi" name="calisanSayisi" value={formData.calisanSayisi} onChange={handleInputChange} required className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <option disabled value="">Seçiniz...</option>
+                            <option value="1-10">1-10</option>
+                            <option value="10-100">10-100</option>
+                            <option value="100+">100+</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">İlgilendiğiniz Bölümler</h3>
+                    <p className="text-sm text-gray-500 mb-3">Seçtiğiniz faaliyet alanlarına göre ilgili bölümler yapay zeka ile eşleştirilmiştir. Ekleme veya çıkarma yapabilirsiniz.</p>
+                     <div className="border p-3 rounded-md">
+                        <label className="flex items-center text-sm font-medium text-gray-900 mb-2 pb-2 border-b">
+                            <input type="checkbox" onChange={handleSelectAllBolumler} checked={formData.ilgilenilenBolumler.length === allDepartments.length} className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+                            <span className="ml-2">Tümünü Seç/Kaldır</span>
+                        </label>
+                        <div className="max-h-60 overflow-y-auto">
+                        {Object.entries(bolumlerData).map(([level, faculties]) => (
+                            <div key={level} className="mb-4">
+                                <h4 className="font-bold text-md text-gray-800 mt-2 mb-1">{level}</h4>
+                                {Object.entries(faculties).map(([facultyName, departments]) => (
+                                    <div key={facultyName} className="ml-2 mb-2">
+                                        <p className="font-semibold text-sm text-gray-700">{facultyName}</p>
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-4 gap-y-1 ml-4">
+                                            {departments.map(bolum => (
+                                                <label key={bolum} className="flex items-center text-sm font-normal text-gray-600">
+                                                     <input type="checkbox" value={bolum} checked={formData.ilgilenilenBolumler.includes(bolum)} onChange={handleBolumChange} className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+                                                    <span className="ml-2">{bolum.replace("...", "")}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="mt-8 pt-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">İşbirliği Alanları (Lütfen ilgili alanları "Evet" veya "Hayır" olarak işaretleyiniz)</h3>
+                    <div className="space-y-4">
+                        {collaborationAreas.map(item => (
+                             <div key={item.key} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
+                                <div className="flex items-center">
+                                    <label className="text-sm text-gray-700 mr-2">{item.label}</label>
+                                    {item.info && (
+                                         <div 
+                                             className="info-icon-container"
+                                             onMouseEnter={() => setActiveInfoPopup(item.key)}
+                                             onMouseLeave={() => setActiveInfoPopup(null)}
+                                         >
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="info-icon w-5 h-5 text-blue-500 hover:text-blue-700">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
+                                            </svg>
+                                            {activeInfoPopup === item.key && (
+                                                <div className="info-popup"> 
+                                                    {item.info}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className="flex space-x-4 flex-shrink-0">
+                                    <label className="inline-flex items-center"><input type="radio" name={item.key} value="true" checked={formData[item.key] === true} onChange={handleRadioChange} className="form-radio h-4 w-4 text-indigo-600" /> <span className="ml-2 text-sm">Evet</span></label>
+                                    <label className="inline-flex items-center"><input type="radio" name={item.key} value="false" checked={formData[item.key] === false} onChange={handleRadioChange} className="form-radio h-4 w-4 text-indigo-600" /> <span className="ml-2 text-sm">Hayır</span></label>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">Yasal Bilgilendirme ve Onaylar</h3>
+                    <div className="mt-2 p-3 border border-gray-200 rounded-md bg-gray-50 h-32 overflow-y-auto kvkk-text-area">
+                        <p className="text-xs text-gray-600">
+                            <strong>Kişisel Verilerin Korunması Kanunu (KVKK) Uyarınca Aydınlatma Metni</strong><br />
+                            İstanbul Arel Üniversitesi ("Üniversite") olarak, tarafınızca paylaşılan kişisel verilerinizi 6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") ve ilgili mevzuat kapsamında, Üniversitemiz ile aranızdaki işbirliği süreçlerinin yürütülmesi, iletişim faaliyetlerinin gerçekleştirilmesi, etkinlik yönetimi, stajyer ve mezun yerleştirme süreçlerinin yönetilmesi, eğitim programları hakkında bilgilendirme yapılması ve Üniversitemizin meşru menfaatleri doğrultusunda veri sorumlusu sıfatıyla işlemekteyiz.<br /><br />
+                            Kişisel verileriniz (Kurum İsmi, Ticari Unvan, Vergi Dairesi, Vergi No, Açık Adres, İl, İlçe, Faaliyet Alanı, Web Sitesi, Grup Şirket, Logo Dosya Adı, İmza Yetkilisi İsim Soyisim, İletişim Kurulacak Kişi İsmi, İletişim Kurulacak Kişi Unvanı, Mobil Telefon, E-posta Adresi, İK Grup Mail, Ek Yetkili Bilgileri, Çalışan Sayısı, İşbirliği Alanlarındaki Tercihleriniz) yukarıda belirtilen amaçlarla sınırlı olarak toplanacak, işlenecek ve gerekli durumlarda Üniversitemizin ilgili birimleri ve yasal zorunluluklar gereği yetkili kamu kurum ve kuruluşları ile paylaşılabilecektir.<br /><br />
+                            KVKK'nın 11. maddesi uyarınca sahip olduğunuz haklar ile ilgili olarak Üniversitemize başvurabilirsiniz. Kişisel verilerinizin işlenmesine ilişkin detaylı bilgi Üniversitemizin web sitesinde yer alan Kişisel Verilerin Korunması Politikası'nda bulunmaktadır.
+                        </p>
+                    </div>
+                    <div className="mt-3">
+                        <label className="inline-flex items-start">
+                            <input type="checkbox" name="kvkkOnay" checked={formData.kvkkOnay} onChange={handleCheckboxChange} required className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1" />
+                            <span className="ml-2 text-sm text-gray-700">KVKK Aydınlatma Metni'ni okudum, anladım ve kişisel verilerimin işlenmesini kabul ediyorum. *</span>
+                        </label>
+                    </div>
+                     <div className="mt-4 bg-gray-50 p-3 rounded-md border border-gray-200">
+                        <p className="text-xs text-gray-600 mb-2">
+                            <strong>İşbirliği Süresi ve Yenileme:</strong> Bu form aracılığıyla başlatılacak potansiyel işbirlikleri, aksi belirtilmedikçe ve karşılıklı mutabakat sağlanmadıkça, ilk onay tarihinden itibaren <strong>1 (bir) yıl</strong> süreyle geçerli kabul edilir. Süre sonunda, işbirliğinin devamı için kayıtlı e-posta adreslerinize bir hatırlatma ve yenileme onayı gönderilecektir. Karşılıklı onayınıza istinaden işbirliği her seferinde 1 (bir) yıl süreyle uzatılabilecektir.
+                        </p>
+                    </div>
+                     <div className="mt-4">
+                        <label className="inline-flex items-start">
+                            <input type="checkbox" name="kamuPaylasimOnay" checked={formData.kamuPaylasimOnay} onChange={handleCheckboxChange} required className="form-checkbox h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500 mt-1" />
+                            <span className="ml-2 text-sm text-gray-700">Bu formu doldurarak, İstanbul Arel Üniversitesi'nin kurumumuza ait bilgileri (kurum ismi, logo, faaliyet alanı gibi genel bilgiler) "Paydaşlarımız", "İşbirliklerimiz" gibi başlıklar altında kamuya açık alanlarda (örn: üniversite web sayfası, sosyal medya), tanıtım materyallerinde ve YÖK (Yükseköğretim Kurulu) gibi otorite kurumlara sunulacak raporlarda paylaşabileceğini kabul ediyorum. *</span>
+                        </label>
+                    </div>
+                </div>
+                
+                 <div className="mt-6 pt-6 border-t border-gray-200 text-center">
+                    <p className="text-sm text-orange-700 bg-orange-50 p-3 rounded-md mb-4">
+                        <strong>Önemli Not:</strong> Formu doldurmuş olmanız iş birliğimizin başladığı anlamına gelmez. Başvurunuz ilgili birimler tarafından incelendikten sonra tarafınıza e-posta ile resmi bilgilendirme yapılacaktır.
+                    </p>
+                    <button type="submit" disabled={isSubmitting} className="w-full sm:w-auto inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed">
+                        {isSubmitting ? 'Doğrulanıyor...' : 'Formu Gönder ve Doğrula'}
+                    </button>
+                    {submitError && <p className="mt-2 text-sm text-red-600">Gönderim sırasında bir hata oluştu. Lütfen tekrar deneyin.</p>}
+                </div>
+            </form>
+        </div>
+    );
+};
+// --- END OF components/DigitalForm.tsx ---
+
+// --- START OF components/Modal.tsx ---
+const Modal = ({ isOpen, onClose, children }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div 
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" 
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+    >
+      <div 
+        className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto" 
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="relative p-6 sm:p-8 md:p-10">
+          <button 
+            onClick={onClose} 
+            className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-10"
+            aria-label="Close modal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+// --- END OF components/Modal.tsx ---
+
+// --- START OF components/SolutionSection.tsx ---
+const SolutionSection = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  return (
+    <React.Fragment>
+      <section className="bg-[#005F73] text-white rounded-lg shadow-lg p-6 md:p-8">
+        <h2 className="text-3xl font-bold text-center mb-8 text-white">Çözüm: Online İşbirliği Formu</h2>
+        <p className="text-center text-[#E9D8A6] max-w-3xl mx-auto mb-10">Mevcut karmaşık süreci, güvenli, akıllı ve dinamik bir dijital form ile değiştirerek verimliliği en üst seviyeye taşıyoruz.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="bg-[#0A9396] p-6 rounded-lg text-center">
+            <div className="text-4xl mb-3">🔒</div>
+            <h3 className="text-xl font-bold mb-2">Güvenli Doğrulama</h3>
+            <p className="text-sm text-[#94D2BD]">SMS ve E-posta onayı ile dijital imza niteliğinde güvenlik sağlanır.</p>
+          </div>
+          <div className="bg-[#0A9396] p-6 rounded-lg text-center">
+            <div className="text-4xl mb-3">🧠</div>
+            <h3 className="text-xl font-bold mb-2">Kurum Hafızası</h3>
+            <p className="text-sm text-[#94D2BD]">Aranabilir ve sürdürülebilir firma kartları ile veri kaybı önlenir.</p>
+          </div>
+          <div className="bg-[#0A9396] p-6 rounded-lg text-center">
+            <div className="text-4xl mb-3">📊</div>
+            <h3 className="text-xl font-bold mb-2">Kolay Raporlama</h3>
+            <p className="text-sm text-[#94D2BD]">YÖK ve iç raporlamalar için anında veri çekme ve analiz imkânı sunar.</p>
+          </div>
+        </div>
+        <div className="text-center mt-8">
+          <button 
+            onClick={() => setIsModalOpen(true)}
+            className="inline-block bg-[#EE9B00] text-[#005F73] font-bold py-3 px-6 rounded-full text-lg hover:bg-[#CA6702] transition duration-300"
+          >
+            Örnek Dijital Formu İncele
+          </button>
+        </div>
+      </section>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <DigitalForm />
+      </Modal>
+    </React.Fragment>
+  );
+};
+// --- END OF components/SolutionSection.tsx ---
+
+// --- START OF components/ExpectedBenefitsSection.tsx ---
+const BenefitCard = ({ title, data, labels, description }) => (
+    <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+        <h3 className="text-lg font-semibold text-[#CA6702] mb-4">{title}</h3>
+        <div className="relative w-full max-w-lg mx-auto h-48">
+            <DoughnutChart data={data} labels={labels} title={title} />
+        </div>
+        <p className="mt-4 text-gray-600">{description}</p>
+    </div>
+);
+
+const ExpectedBenefitsSection = () => {
+    const benefits = [
+        { title: 'Süre Azalması', data: [95, 5], labels: ['Azalma', 'Kalan'], description: 'Süreçler haftalardan günlere inerek işbirliği hızı artar.' },
+        { title: 'İş Gücü Tasarrufu', data: [80, 20], labels: ['Tasarruf', 'Kalan'], description: 'Manuel adımlar ortadan kalkar, personel zamanı daha verimli kullanılır.' },
+        { title: 'Hata Oranı Azalması', data: [95, 5], labels: ['Azalma', 'Kalan'], description: 'Otomasyon sayesinde manuel veri girişi hataları minimize edilir.' },
+        { title: 'Maliyet Tasarrufu', data: [100, 0], labels: ['Tasarruf', 'Kalan'], description: 'Kağıt, kargo ve arşivleme masrafları tamamen ortadan kalkar.' },
+    ];
+
+    return (
+        <section>
+            <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Beklenen Faydalar: Rakamlarla Dönüşüm</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {benefits.map((benefit, index) => (
+                    <BenefitCard key={index} {...benefit} />
+                ))}
+            </div>
+        </section>
+    );
+};
+// --- END OF components/ExpectedBenefitsSection.tsx ---
+
+// --- START OF components/StrategicAdvantagesSection.tsx ---
+const AdvantageCard = ({ icon, title, children }) => (
+    <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="text-3xl text-[#EE9B00] mb-3">{icon}</div>
+        <h3 className="text-xl font-bold text-[#005F73] mb-2">{title}</h3>
+        <p className="text-gray-600">{children}</p>
+    </div>
+);
+
+const StrategicAdvantagesSection = () => {
+    return (
+        <section>
+            <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Stratejik Avantajlar</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <AdvantageCard icon="🏢" title="Güçlü Kurumsal İmaj">
+                    Daha fazla firmayı referans göstererek üniversitemizin sektördeki konumunu güçlendiririz.
+                </AdvantageCard>
+                <AdvantageCard icon="🎓" title="Zengin Öğrenci Desteği">
+                    Öğrencilerimiz için kariyer planlamalarında kullanabilecekleri zengin bir firma veri tabanı oluştururuz.
+                </AdvantageCard>
+                <AdvantageCard icon="🌿" title="Çevre Dostu Yaklaşım">
+                    Kağıt kullanımını sıfırlayarak sürdürülebilirlik hedeflerimize önemli bir katkı sağlarız.
+                </AdvantageCard>
+            </div>
+        </section>
+    );
+};
+// --- END OF components/StrategicAdvantagesSection.tsx ---
+
+// --- START OF components/DataAccessSection.tsx ---
+const DataAccessSection = () => {
+    return (
+        <section className="bg-white rounded-lg shadow-lg p-6 md:p-8">
+            <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Veri Güvenliği ve Erişim Yönetimi</h2>
+            <div className="max-w-4xl mx-auto text-center">
+                <p className="text-gray-600 mb-6">
+                    Toplanan verilerin güvenliği ve doğru şekilde kullanılması en büyük önceliğimizdir. Kurumlar ile mükerrer temasların önüne geçmek, mevcut iyi ilişkilerimizi korumak ve profesyonel bir yaklaşım sergilemek amacıyla bir erişim yönetim planı oluşturulmuştur.
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                        <h3 className="font-bold text-lg text-[#005F73] mb-2">Geniş Erişim: Kurum Bilgisi</h3>
+                        <p className="text-gray-700">
+                            İlgili tüm akademik ve idari birimler, işbirliği yapılan kurumların <span className="font-semibold">isimlerine ve faaliyet alanlarına</span> erişebilir. Bu şeffaflık, üniversite genelinde potansiyel sinerjilerin keşfedilmesine olanak tanır.
+                        </p>
+                    </div>
+                    <div className="bg-gray-50 p-6 rounded-lg border border-gray-200">
+                         <h3 className="font-bold text-lg text-[#005F73] mb-2">Kısıtlı Erişim: İletişim Bilgileri</h3>
+                        <p className="text-gray-700">
+                           İletişim kişisi, telefon ve e-posta gibi hassas bilgilere yalnızca <span className="font-semibold">Kurumsal İlişkiler Birimi ve ilgili müdür</span> tarafından erişilebilir. Bu, kurumlarla iletişimin merkezi ve koordineli bir şekilde yürütülmesini sağlar.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    );
+};
+// --- END OF components/DataAccessSection.tsx ---
+
+// --- START OF components/ActionPlanSection.tsx ---
+const TimelineItem = ({ title, children }) => (
+    <div className="relative">
+        <div className="absolute w-6 h-6 bg-[#EE9B00] rounded-full -left-[13px] border-4 border-white"></div>
+        <div className="ml-8 bg-white p-4 rounded-lg shadow">
+            <h3 className="font-bold text-lg text-[#005F73]">{title}</h3>
+            <p className="text-sm text-gray-600">{children}</p>
+        </div>
+    </div>
+);
+
+const ActionPlanSection = () => {
+    return (
+        <section>
+            <h2 className="text-3xl font-bold text-[#005F73] text-center mb-8">Aksiyon Planı: Dijital Geleceğe Adımlar</h2>
+            <div className="max-w-3xl mx-auto">
+                <div className="relative pl-8 space-y-8 border-l-2 border-[#0A9396]">
+                    <TimelineItem title="Rektörlük Onayı & Genel Sekreterlik Talimatı">
+                        Projenin hayata geçirilmesi için üst yönetim onayı ve resmi talimatların alınması.
+                    </TimelineItem>
+                    <TimelineItem title="BT Biriminin Hazırlığı & Sistemi Devreye Alma">
+                        Gelecekteki entegrasyon planlaması ve dijital formun canlıya alınması.
+                    </TimelineItem>
+                    <TimelineItem title="Duyuru ve Yaygınlaştırma">
+                        Yeni sürecin tüm akademik ve idari birimlere tanıtılması ve kullanımının teşvik edilmesi.
+                    </TimelineItem>
+                </div>
+            </div>
+        </section>
+    );
+};
+// --- END OF components/ActionPlanSection.tsx ---
+
+// --- START OF components/Footer.tsx ---
+const Footer = () => {
+  return (
+    <footer className="text-center mt-12 md:mt-16 pt-8 border-t border-gray-300">
+      <p className="text-gray-500">&copy; 2025 İstanbul Arel Üniversitesi | ArelKAM</p>
+    </footer>
+  );
+};
+// --- END OF components/Footer.tsx ---
+
+// --- START OF App.tsx ---
+const App = () => {
+  return (
+    <div className="bg-gray-50 text-gray-800">
+      <div className="container mx-auto p-4 md:p-8">
+        <Header />
+        <main className="space-y-12 md:space-y-16">
+          <CurrentSituationSection />
+          <BenchmarkAnalysisSection />
+          <SolutionSection />
+          <ExpectedBenefitsSection />
+          <StrategicAdvantagesSection />
+          <DataAccessSection />
+          <ActionPlanSection />
+        </main>
+        <Footer />
+      </div>
+    </div>
+  );
+};
+// --- END OF App.tsx ---
+
+// --- START OF index.tsx (Main Render Call) ---
+const rootElement = document.getElementById('root');
+const root = ReactDOM.createRoot(rootElement);
+root.render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+// --- END OF index.tsx ---
 
     </script>
 </body>
